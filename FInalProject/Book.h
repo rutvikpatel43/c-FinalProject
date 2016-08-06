@@ -14,7 +14,6 @@ public:
 	int GetBookId();
 	string GetBookTitle();
 	void AddBook();
-	void UpdateBook();
 	void DeleteBook();
 	void ShowBook();
 	virtual ~Book();
