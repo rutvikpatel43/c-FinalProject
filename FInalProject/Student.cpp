@@ -2,10 +2,6 @@
 
 
 
-Student::Student()
-{
-}
-
 
 Student::~Student()
 {
