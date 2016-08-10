@@ -22,8 +22,8 @@ void main()
 		switch(choice)
 		{
 		case '1':
-			if (l.Login()) {
-
+			if (l.Login()==true) {
+				l.Menu();
 			}
 			break;
 		case '2':

@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
 #include<stdio.h>
+#include<fstream>
 using namespace std;
 class Book
 {
@@ -11,6 +12,9 @@ private:
 	int Quantity;
 public:
 	Book();
+	void EditBook();
+	void SearchBook();
+	void Menu();
 	int GetBookId();
 	string GetBookTitle();
 	void AddBook();

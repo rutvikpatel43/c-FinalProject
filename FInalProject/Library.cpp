@@ -1,4 +1,5 @@
 #include "Library.h"
+
 /*
 * Authors : Rutvik Patel(#200305366), Himanshu Patel(#200306422)
 * Description: Library definations file for Library class.
@@ -84,6 +85,42 @@ string Library::GetLibraryPass()
 	return str;
 }
 /*
+* return type void
+* Menu for Librarian and can do all the things
+*/
+void Library::Menu()
+{
+	Book B;
+	Student Std;
+	char choice=' ';
+	while (toupper(choice) != 'B')
+	{
+		//Print Menu
+		cout << "Enter your choice" << endl;
+		cout << "1. Book Managment" << endl;
+		cout << "2. Assign book" << endl;
+		cout << "Q to quit" << endl;
+		cout << "B Back to Login Menu" << endl;
+		cin >> choice;
+		if(isalpha(choice))
+		{ 
+			choice = toupper(choice);
+		}
+		switch (choice)
+		{
+		case '1':
+			B.Menu();
+			break;
+		case '2':
+			break;
+		case 'B':
+			break;
+		case 'Q':
+			exit(0);
+		}
+	}
+}
+/*
 * return type bool
 * logins the librarian
 */
@@ -111,7 +148,6 @@ bool Library::Login()
 			LibraryFile.read((char *)&Lib, sizeof(Lib));// record read and stored in lib
 			if ((Lib.LibrarianID == LibId) && strcmp(Lib.LibrarianPassword, LibPass) == 0)
 			{
-				cout << "Correct Logins" << endl;
 				return true;
 			}
 		}

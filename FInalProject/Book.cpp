@@ -37,7 +37,27 @@ string Book::GetBookTitle()
 */
 void Book::AddBook()
 {
-
+	Book B;
+	ofstream BookFile;
+	BookFile.open("Book.dat", ios::out);
+	cout << "Enter Book ID:";
+	cin >> B.BookId;
+	cout << "Enter Book Title:";
+	cin >> B.BookTitle;
+	cin.ignore();
+	cout << "Enter Book ISBN:";
+	cin >> B.BookISBN;
+	cout << "Enter the quantity:";
+	cin >> B.Quantity;
+	if (!BookFile)
+	{
+		cerr << "Cannot Open File" << endl;
+	}
+	else
+	{
+		BookFile.write((char*)&B, sizeof(B));
+		cout << "Record Added Sucessfully" << endl;
+	}
 }
 /*
 * return type void
@@ -45,16 +65,123 @@ void Book::AddBook()
 */
 void Book::DeleteBook()
 {
-
+	int n;
+	cout << "Enter Book Id to Delete" << endl;
+	cin >> n;
+	Book obj;
+	ifstream inFile;
+	inFile.open("Book.dat", ios::binary);
+	ofstream outFile;
+	outFile.open("temp.dat", ios::out | ios::binary);
+	while (inFile.read((char*)&obj, sizeof(obj)))
+	{ 
+		if (obj.BookId != n)
+		{
+			outFile.write((char*)&obj, sizeof(obj));
+		} 
+	}
+	inFile.close();
+	outFile.close();
+	remove("Book.dat");
+	rename("temp.dat", "Book.dat");
+	cout << "Record Deleted Sucessfully" << endl;
 }
+
 /*
 * return type void
 * shows the book from the file
 */
 void Book::ShowBook()
 {
+	Book obj;
+	ifstream inFile;
+	cout << "\t\t\tBook Details:\n";
+	inFile.open("Book.dat", ios::in|| ios::binary);
+	while (inFile.read((char*)&obj, sizeof(obj)))
+	{
+			printf("%10s %10s %10s %10s\n", "Book Id", "Book Title", "Book ISBN", "Quantity");
+			printf("%10d %10s %10s %10d\n", obj.BookId,obj.BookTitle,obj.BookISBN,obj.Quantity);
+	}
+	inFile.close();
+}
+
+/***
+*Return type void
+*Description: to give crud option for book class
+**/
+void Book::Menu()
+{
+	char choice = ' ';
+	while (toupper(choice)!='B')
+	{
+		// Menu Print
+		cout << "1. Add Book" << endl;
+		cout << "2. Delete book" << endl;
+		cout << "3. Edit book" << endl;
+		cout << "4. Display all books" << endl;
+		cout << "5. Search Book" << endl;
+		cout << "B Back to Librarian Menu" << endl;
+		cin >> choice;
+		switch (choice)
+		{
+		case '1':
+			AddBook();
+			break;
+		case '2':
+			DeleteBook();
+			break;
+		case '3':
+			EditBook();
+			break;
+		case '4':
+			ShowBook();
+			break;
+		case '5':
+			SearchBook();
+		default:
+			break;
+		}
+	}
+}
+/*
+* Return type void
+* description to edit book details
+*/
+void Book::EditBook() {
+	int n;
+	cout << "Enter Book Id to Edit:" << endl;
+	cin >> n;
+	Book obj;
+	ifstream inFile;
+	inFile.open("Book.dat", ios::binary);
+	ofstream outFile;
+	outFile.open("temp.dat", ios::out | ios::binary);
+	while (inFile.read((char*)&obj, sizeof(obj)))
+	{
+		if (obj.BookId == n)
+		{
+			obj.BookId = n;
+			cout << "Enter Book Title" << endl;
+			cin >> obj.BookTitle;
+			cout << "Enter Book ISBN:" << endl;
+			cin >> obj.BookISBN;
+			outFile.write((char*)&obj, sizeof(obj));
+		}
+		else {
+			outFile.write((char*)&obj, sizeof(obj));
+		}
+	}
+	inFile.close();
+	outFile.close();
+	remove("Book.dat");
+	rename("temp.dat", "Book.dat");
+	cout << "Record Updated Sucessfully" << endl;
 
 }
+/*
+* Return type void
+* description to Search book details
+*/
 Book::~Book()
 {
 }
