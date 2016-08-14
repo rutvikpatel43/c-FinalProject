@@ -10,7 +10,19 @@
 */
 void Student::AddStudent()
 {
-
+	Student stud;
+	ofstream file;
+	cout << "Enter student ID: ";
+	cin >> stud.StudentID;
+	cin.ignore();
+	cout << "Enter First name :";
+	cin.getline(stud.StudentFirstName, 20);
+	cout << "Enter Last name :";
+	cin.getline(stud.StudentLastName, 20);
+	stud.StudentCredit = 0;
+	file.open("Student.dat", ios::app);
+	file.write((char*)&stud, sizeof(stud));
+	file.close();
 }
 
 /*
@@ -35,7 +47,15 @@ void Student::UpdateStudent()
 */
 void Student::PrintStudent()
 {
-
+	printf("%10s %20s %20s %10s\n", "Student Id", "First Name", "Last Name", "Credit");
+	printf("%10d %20s %20s %10d\n", StudentID, StudentFirstName, StudentLastName, StudentCredit);
+}
+/*
+*return type int for student id
+*returns the id of the student 
+*/
+int Student::getId() {
+	return StudentID;
 }
 /*
 * Contructor for the class

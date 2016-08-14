@@ -112,11 +112,54 @@ void Library::Menu()
 			B.Menu();
 			break;
 		case '2':
+			giveBook();
 			break;
 		case 'B':
 			break;
 		case 'Q':
 			exit(0);
+		}
+	}
+}
+/*
+*return type void
+*give a bbok to student account
+*/
+void Library::giveBook()
+{
+	int studentId, bookId;
+	Student stud;
+	Book book;
+	ifstream studentfile, bookfile;
+	cout << "Enter Student Id:";
+	cin >> studentId;
+	studentfile.open("student.dat", ios::in || ios::binary);
+	if (!studentfile)
+		cerr << "Cannot read file" << endl;
+	else {
+		while (studentfile.read((char*)&stud, sizeof(stud)))
+		{
+			if (studentId == stud.getId())
+			{
+				stud.PrintStudent();
+			}
+		}
+	}
+	studentfile.close();
+	cout << "Enter Book Id:";
+	cin >> bookId;
+	bookfile.open("Book.dat", ios::in || ios::binary);
+	if (!bookfile) {
+		cerr << "Cannot open file" << endl;
+	}
+	else
+	{
+		while (bookfile.read((char*)&book, sizeof(book)))
+		{
+			if (bookId == book.GetBookId())
+			{
+				book.ShowBook();
+			}
 		}
 	}
 }
@@ -132,10 +175,10 @@ bool Library::Login()
 	ifstream LibraryFile;// Librarian file contains all the librarian
 	LibraryFile.open("Library.dat", ios::in || ios::binary);
 	//get the credintial from the user
-	cout << "Enter your Library ID";
+	cout << "Enter your Library ID :";
 	cin >> LibId;
 	cin.ignore();
-	cout << "Enter your Password";
+	cout << "Enter your Password :";
 	cin.getline(LibPass,20);
 	if (!LibraryFile)// trying to read the file
 	{

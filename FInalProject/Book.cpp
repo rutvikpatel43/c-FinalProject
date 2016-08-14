@@ -39,7 +39,7 @@ void Book::AddBook()
 {
 	Book B;
 	ofstream BookFile;
-	BookFile.open("Book.dat", ios::out);
+	BookFile.open("Book.dat", ios::app);
 	cout << "Enter Book ID:";
 	cin >> B.BookId;
 	cout << "Enter Book Title:";
@@ -87,6 +87,12 @@ void Book::DeleteBook()
 	cout << "Record Deleted Sucessfully" << endl;
 }
 
+void Book::PrintBook()
+{
+	printf("%10s %20s %20s %10s\n", "Book Id", "Book Title", "Book ISBN", "Qunatity");
+	printf("%10d %20s %20s %10d\n",BookId,BookTitle, BookISBN, Quantity);
+}
+
 /*
 * return type void
 * shows the book from the file
@@ -96,10 +102,10 @@ void Book::ShowBook()
 	Book obj;
 	ifstream inFile;
 	cout << "\t\t\tBook Details:\n";
+	printf("%10s %10s %10s %10s\n", "Book Id", "Book Title", "Book ISBN", "Quantity");
 	inFile.open("Book.dat", ios::in|| ios::binary);
 	while (inFile.read((char*)&obj, sizeof(obj)))
 	{
-			printf("%10s %10s %10s %10s\n", "Book Id", "Book Title", "Book ISBN", "Quantity");
 			printf("%10d %10s %10s %10d\n", obj.BookId,obj.BookTitle,obj.BookISBN,obj.Quantity);
 	}
 	inFile.close();
@@ -182,6 +188,32 @@ void Book::EditBook() {
 * Return type void
 * description to Search book details
 */
+void Book::SearchBook()
+{
+	int id;
+	Book obj;
+	ifstream file;
+	cout << "Enter the Book Id you want to search";
+	cin >> id;
+	file.open("Book.dat", ios::in || ios::binary);
+	if (!file)
+	{
+		cerr << "Cannot open file";
+	}
+	else
+	{
+		while (file.read((char*)&obj, sizeof(obj)))
+		{
+			if (obj.BookId == id)
+			{
+				printf("%10s %10s %10s %10s\n", "Book Id", "Book Title", "Book ISBN", "Quantity");
+				printf("%10d %10s %10s %10d\n", obj.BookId, obj.BookTitle, obj.BookISBN, obj.Quantity);
+			}
+			
+		}
+		
+	}
+}
 Book::~Book()
 {
 }

@@ -1,4 +1,8 @@
 #pragma once
+#include<iostream>
+#include<stdio.h>
+#include<fstream>
+using namespace std;
 class Student
 {
 	int StudentID;
@@ -7,6 +11,7 @@ class Student
 	int StudentCredit;
 public:
 	Student();
+	int getId();
 	void AddStudent();
 	void UpdateStudent();
 	void DeleteStudent();

@@ -12,6 +12,7 @@ private:
 	int Quantity;
 public:
 	Book();
+	void PrintBook();
 	void EditBook();
 	void SearchBook();
 	void Menu();
