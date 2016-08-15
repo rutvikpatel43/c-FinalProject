@@ -22,7 +22,7 @@ public:
 	void AddBook();
 	void DeleteBook();
 	void ShowBook();
-	void EditQuantity(int n);
+	bool EditQuantity(int n);
 	virtual ~Book();
 };
 

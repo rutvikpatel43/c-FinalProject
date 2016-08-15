@@ -1,5 +1,6 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
+#define _SCL_SECURE_NO_WARNINGS
 #include<iostream>
 #include<stdio.h>
 #include<fstream>
@@ -21,6 +22,8 @@ private:
 	};
 public:
 	Library();
+	void showrecord();
+	void printAssignMenu();
 	void Menu();
 	bool Login();
 	void AddLibrary();

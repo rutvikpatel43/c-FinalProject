@@ -185,7 +185,7 @@ void Book::EditBook() {
 	cout << "Record Updated Sucessfully" << endl;
 
 }
-void Book::EditQuantity(int n) {
+bool Book::EditQuantity(int n) {
 	Book obj,cobj;
 	ifstream inFile;
 	inFile.open("Book.dat",ios::in || ios::binary);
@@ -197,11 +197,19 @@ void Book::EditQuantity(int n) {
 		{
 			cobj = obj;
 			obj.BookId = cobj.BookId;
-			strncpy(obj.BookTitle,cobj.BookTitle,20);
+			strncpy(obj.BookTitle, cobj.BookTitle, 20);
 			strcpy(obj.BookISBN, cobj.BookISBN);
-			cobj.Quantity = cobj.Quantity - 1;
-			obj.Quantity = cobj.Quantity;
-			outFile.write((char*)&obj, sizeof(obj));
+			if (cobj.Quantity > 2)
+			{
+				cobj.Quantity = cobj.Quantity - 1;
+				obj.Quantity = cobj.Quantity;
+				outFile.write((char*)&obj, sizeof(obj));
+			}
+			else
+			{
+				break;
+				return false;
+			}
 		}
 		else {
 			outFile.write((char*)&obj, sizeof(obj));
@@ -211,7 +219,8 @@ void Book::EditQuantity(int n) {
 	outFile.close();
 	remove("Book.dat");
 	rename("temp.dat", "Book.dat");
-	cout << "Record Updated Sucessfully" << endl;
+	return true;
+	//cout << "Cannot give book to student as only 2 quantity are left" << endl;
 }
 /*
 * Return type void

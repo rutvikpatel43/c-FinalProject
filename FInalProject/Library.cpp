@@ -98,7 +98,7 @@ void Library::Menu()
 		//Print Menu
 		cout << "Enter your choice" << endl;
 		cout << "1. Book Managment" << endl;
-		cout << "2. Assign book" << endl;
+		cout << "2. Assign or return book" << endl;
 		cout << "Q to quit" << endl;
 		cout << "B Back to Login Menu" << endl;
 		cin >> choice;
@@ -112,7 +112,7 @@ void Library::Menu()
 			B.Menu();
 			break;
 		case '2':
-			giveBook();
+			printAssignMenu();
 			break;
 		case 'B':
 			break;
@@ -120,6 +120,55 @@ void Library::Menu()
 			exit(0);
 		}
 	}
+}
+void Library::showrecord()
+{
+	Record r;
+	cout << "\t\t Book Taken by student" << endl;
+	ifstream StdMgn;
+	StdMgn.open("LibMng.dat", ios::in || ios::binary);
+	while (StdMgn.read((char*)&r, sizeof(r)))
+	{
+		printf("%10s %10s %20s %30s %30s\n", "Student Id", "Book Id", "Book Title", "Issued Date","Return Date");
+		printf("%10d %10d %20s %30s %30s\n", r.studentId,r.bookId,r.bookTitle, ctime(&r.issuedTime), ctime(&r.returnTime));
+	}
+}
+/*
+*return type void
+*used to display the menu to assign return and show all the books
+*/
+void Library::printAssignMenu() {
+	char choice='1';
+	while (choice != 'B')
+	{
+		cout << "Enter your choice " << endl;
+		cout << "1. To give book to student" << endl;
+		cout << "2. To return a book" << endl;
+		cout << "3. TO display all the book taken by student" << endl;
+		cout << "B. to go back" << endl;
+		cin >> choice;
+		if (isalpha(choice) == true)
+		{
+			choice = toupper(choice);
+		}
+		switch (choice)
+		{
+		case'1':
+			giveBook();
+			break;
+		case'2':
+			returnbook();
+			break;
+		case '3':
+			showrecord();
+			break;
+		case'B':
+			break;
+		default:
+			cout << "Wrong choice" << endl;
+		}
+	}
+
 }
 /*
 *return type void
@@ -172,11 +221,16 @@ void Library::giveBook()
 				{
 					count = 1;
 					book.PrintBook();
+
 					string title = book.GetBookTitle();
-					for (int i = 0; i < title.length(); i++)
+					std::size_t length = title.copy(r.bookTitle,20);
+					r.bookTitle[length] = '\0';
+					/*
+				for (int i = 0; i < title.size(); i++)
 					{
 						r.bookTitle[i] = title[i];
 					}
+					*/
 				}
 			}
 			if (count != 1)
@@ -217,10 +271,17 @@ void Library::giveBook()
 		}
 		else
 		{
-			StdBookFile.write((char*)&r, sizeof(r));
-			cout << "Record added Successfully" << endl;
+			if (book.EditQuantity(r.bookId) != true)
+			{
+				cout << "cannot give book to student as only 2 quantity is left" << endl;
+			}
+			else
+			{
+				StdBookFile.write((char*)&r, sizeof(r));
+				cout << "Record added Successfully" << endl;
+			}
 		}
-		book.EditQuantity(r.bookId);
+		
 		StdBookFile.close();
 	}
 	else
@@ -244,27 +305,28 @@ void Library::returnbook()
 		cin >> studentId;
 		cout << "Enter Book Id:";
 		cin >> bookId;
-		LibMgn.open("LibMgn.dat", ios::in || ios::binary);
+		LibMgn.open("LibMng.dat", ios::in || ios::binary);
 		if (!LibMgn)
 			cerr << "Cannot read file" << endl;
 		else {
 			while (LibMgn.read((char*)&r, sizeof(r)))
 			{
-				if (r.studentId != studentId&&r.bookId != bookId)
+				if (r.studentId != studentId && r.bookId != bookId)
 				{
 					count = 1;
-							outFile.write((char*)&r, sizeof(r));
+					outFile.write((char*)&r, sizeof(r));
 				}
 			}
+
+			LibMgn.close();
+			outFile.close();
+			remove("LibMng.dat");
+			rename("temp.dat", "LibMng.dat");
+			cout << "Record Deleted Sucessfully" << endl;
+			if (count == 1)
+				cout << "Sorry cannot find record " << endl;
+			LibMgn.close();
 		}
-		LibMgn.close();
-		outFile.close();
-		remove("LibMgn.dat");
-		rename("temp.dat", "LibMgn.dat");
-		cout << "Record Deleted Sucessfully" << endl;
-		if (count != 1)
-			cout << "Sorry cannot find record " << endl;
-		LibMgn.close();
 	}
 }
 /*

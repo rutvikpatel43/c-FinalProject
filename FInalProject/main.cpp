@@ -10,22 +10,8 @@
 Author :Rutvik Patel,Himanshu Patel
 Description: main Method of the program this is where the program starts execution
 */
-/*
 using namespace std;
-int main()
-{
-	time_t base = time(0);
-	for (int i = 0; i < 4; ++i) {
-		struct tm* tm = localtime(&base);
-		tm->tm_mday += i;
-		time_t next = mktime(tm);
-		std::cout << ctime(&next);
-	}
-	cin.get();
 
-	return 0;
-}
-*/
 
 void main()
 {
