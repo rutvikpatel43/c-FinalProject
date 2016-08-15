@@ -1,4 +1,5 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 #include<iostream>
 #include<stdio.h>
 #include<fstream>
@@ -21,6 +22,7 @@ public:
 	void AddBook();
 	void DeleteBook();
 	void ShowBook();
+	void EditQuantity(int n);
 	virtual ~Book();
 };
 

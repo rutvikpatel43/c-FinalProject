@@ -127,40 +127,144 @@ void Library::Menu()
 */
 void Library::giveBook()
 {
-	int studentId, bookId;
+	Record r,g;
+	int count=0;
 	Student stud;
 	Book book;
+	time_t next;
 	ifstream studentfile, bookfile;
-	cout << "Enter Student Id:";
-	cin >> studentId;
-	studentfile.open("student.dat", ios::in || ios::binary);
-	if (!studentfile)
-		cerr << "Cannot read file" << endl;
-	else {
-		while (studentfile.read((char*)&stud, sizeof(stud)))
-		{
-			if (studentId == stud.getId())
+	fstream StdBookFile;
+	while (count != 1)
+	{
+		cout << "Enter Student Id:";
+		cin >> r.studentId;
+		studentfile.open("student.dat", ios::in || ios::binary);
+		if (!studentfile)
+			cerr << "Cannot read file" << endl;
+		else {
+			while (studentfile.read((char*)&stud, sizeof(stud)))
 			{
-				stud.PrintStudent();
+				if (r.studentId == stud.getId())
+				{
+					count = 1;
+					stud.PrintStudent();
+				}
+			}
+		}
+		if (count != 1)
+			cout << "Sorry cannot find record " << endl;
+		studentfile.close();
+	}
+	count = 0;
+	while (count != 1)
+	{
+		cout << "Enter Book Id:";
+		cin >> r.bookId;
+		bookfile.open("Book.dat", ios::in || ios::binary);
+		if (!bookfile) {
+			cerr << "Cannot open file" << endl;
+		}
+		else
+		{
+			while (bookfile.read((char*)&book, sizeof(book)))
+			{
+				if (r.bookId == book.GetBookId())
+				{
+					count = 1;
+					book.PrintBook();
+					string title = book.GetBookTitle();
+					for (int i = 0; i < title.length(); i++)
+					{
+						r.bookTitle[i] = title[i];
+					}
+				}
+			}
+			if (count != 1)
+				cout << "Cannot find the book id" << endl;
+		}
+		bookfile.close();
+	}
+	r.issuedTime = time(0);
+	// Stack overflow helped us to get this code
+	for (int i = 0; i < 14; ++i) {
+		struct tm* tm = localtime(&r.issuedTime);
+		tm->tm_mday += i;
+		next = mktime(tm);
+	}
+	r.returnTime = next;
+	count = 0;
+	// reading to check if the record already exists
+	StdBookFile.open("LibMng.dat", ios::in || ios::binary);
+	if (!StdBookFile)
+		cerr << "cannot read the file" << endl;
+	else {
+		while (StdBookFile.read((char*)&g, sizeof(g)))
+		{
+			if (g.studentId == r.studentId && g.bookId == r.bookId)
+			{
+				count = 1;
 			}
 		}
 	}
-	studentfile.close();
-	cout << "Enter Book Id:";
-	cin >> bookId;
-	bookfile.open("Book.dat", ios::in || ios::binary);
-	if (!bookfile) {
-		cerr << "Cannot open file" << endl;
+	StdBookFile.close();
+	if (count != 1)
+	{
+		// writing to the student file
+		StdBookFile.open("LibMng.dat", ios::app);
+		if (!StdBookFile)
+		{
+			cerr << "cannot find file" << endl;
+		}
+		else
+		{
+			StdBookFile.write((char*)&r, sizeof(r));
+			cout << "Record added Successfully" << endl;
+		}
+		book.EditQuantity(r.bookId);
+		StdBookFile.close();
 	}
 	else
+		cout << "Sorry the book is already taken by the student" << endl;
+	cin.get();
+}
+/*
+*return type void 
+*its called when a student return book
+*/
+void Library::returnbook()
+{
+	Record r, g;
+	int count = 0, studentId, bookId;
+	ifstream LibMgn;
+	ofstream outFile;
+	outFile.open("temp.dat", ios::out | ios::binary);
+	while (count != 1)
 	{
-		while (bookfile.read((char*)&book, sizeof(book)))
-		{
-			if (bookId == book.GetBookId())
+		cout << "Enter Student Id:";
+		cin >> studentId;
+		cout << "Enter Book Id:";
+		cin >> bookId;
+		LibMgn.open("LibMgn.dat", ios::in || ios::binary);
+		if (!LibMgn)
+			cerr << "Cannot read file" << endl;
+		else {
+			while (LibMgn.read((char*)&r, sizeof(r)))
 			{
-				book.ShowBook();
+				if (r.studentId != studentId&&r.bookId != bookId)
+				{
+					count = 1;
+							outFile.write((char*)&r, sizeof(r));
+				}
 			}
 		}
+		LibMgn.close();
+		outFile.close();
+		remove("LibMgn.dat");
+		rename("temp.dat", "LibMgn.dat");
+		cout << "Record Deleted Sucessfully" << endl;
+		if (count != 1)
+			cout << "Sorry cannot find record " << endl;
+		LibMgn.close();
 	}
 }
 /*

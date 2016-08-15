@@ -47,6 +47,7 @@ void Book::AddBook()
 	cin.ignore();
 	cout << "Enter Book ISBN:";
 	cin >> B.BookISBN;
+	cin.ignore();
 	cout << "Enter the quantity:";
 	cin >> B.Quantity;
 	if (!BookFile)
@@ -70,7 +71,7 @@ void Book::DeleteBook()
 	cin >> n;
 	Book obj;
 	ifstream inFile;
-	inFile.open("Book.dat", ios::binary);
+	inFile.open("Book.dat",ios::in || ios::binary);
 	ofstream outFile;
 	outFile.open("temp.dat", ios::out | ios::binary);
 	while (inFile.read((char*)&obj, sizeof(obj)))
@@ -183,6 +184,34 @@ void Book::EditBook() {
 	rename("temp.dat", "Book.dat");
 	cout << "Record Updated Sucessfully" << endl;
 
+}
+void Book::EditQuantity(int n) {
+	Book obj,cobj;
+	ifstream inFile;
+	inFile.open("Book.dat",ios::in || ios::binary);
+	ofstream outFile;
+	outFile.open("temp.dat", ios::out | ios::binary);
+	while (inFile.read((char*)&obj, sizeof(obj)))
+	{
+		if (obj.BookId == n)
+		{
+			cobj = obj;
+			obj.BookId = cobj.BookId;
+			strncpy(obj.BookTitle,cobj.BookTitle,20);
+			strcpy(obj.BookISBN, cobj.BookISBN);
+			cobj.Quantity = cobj.Quantity - 1;
+			obj.Quantity = cobj.Quantity;
+			outFile.write((char*)&obj, sizeof(obj));
+		}
+		else {
+			outFile.write((char*)&obj, sizeof(obj));
+		}
+	}
+	inFile.close();
+	outFile.close();
+	remove("Book.dat");
+	rename("temp.dat", "Book.dat");
+	cout << "Record Updated Sucessfully" << endl;
 }
 /*
 * Return type void

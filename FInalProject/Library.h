@@ -1,5 +1,5 @@
 #pragma once
-
+#define _CRT_SECURE_NO_WARNINGS
 #include<iostream>
 #include<stdio.h>
 #include<fstream>
@@ -28,6 +28,7 @@ public:
 	void DeleteLibrary();
 	int GetLibraryId();
 	void giveBook();
+	void returnbook();
 	string GetLibraryPass();
 	~Library();
 };
